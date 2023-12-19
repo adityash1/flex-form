@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Flex Form
 
-## Getting Started
+This is a web application form built with Next.js and MongoDB. It provides a user-friendly interface for slot booking and robust backend functionality.
 
-First, run the development server:
+## Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Before you begin, ensure you have met the following requirements:
+
+- You have installed the latest version of [Node.js and npm](https://nodejs.org/en/download/)
+- You have a Windows/Linux/Mac machine.
+- You have Docker installed on your machine.
+
+## Installing this Application
+
+1. Clone the repository
+
+```
+git clone https://github.com/adityash1/flex-form.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Navigate to the project directory
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+cd flex-form
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Running via docker
 
-## Learn More
+```
+docker-compose up
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Running on local machine
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+npm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+docker run --name flex-mongodb -p 27017:27017 -d mongo:latest
+```
 
-## Deploy on Vercel
+```
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Db diagram
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![dbdiagram]()
