@@ -44,6 +44,13 @@ docker run --name flex-mongodb -p 27017:27017 -d mongo:latest
 npm run dev
 ```
 
-### Db diagram
+| Db diagram                         | Walkthrough                           |
+| ----------------------------------- | ----------------------------------- |
+| <img src="https://github.com/adityash1/flex-form/assets/65771169/f46188c5-89b1-4074-b467-42db84ffb00d" width="500"> | <video src="https://github.com/adityash1/flex-form/assets/65771169/33ff5e17-e827-4085-a0dd-8e7601d6bc10"></video> |
 
-![dbdiagram]()
+
+
+
+
+
+
