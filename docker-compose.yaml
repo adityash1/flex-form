@@ -1,19 +1,15 @@
-version: "3.8"
+# docker-compose.yml
+version: "3"
 services:
-  mongodb:
-    image: mongo
-    ports:
-      - "27017:27017"
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: example
-
-  nextjs:
+  app:
     build: .
     ports:
       - "3000:3000"
-    environment:
-      # MONGO_URI: mongodb://root:example@mongodb:27017/yourdbname
-      MONGO_URI: mongodb://localhost:27017
     depends_on:
-      - mongodb
+      - db
+    environment:
+      - MONGODB_URI=mongodb://db:27017/mydb
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
