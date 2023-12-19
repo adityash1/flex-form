@@ -10,15 +10,32 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   batch: {
-    type: String,
-    required: true,
-  },
-  paymentStatus: {
-    type: String,
-    default: "pending",
+    paymentStatus: {
+      type: String,
+      default: "pending",
+      required: true,
+    },
+    slot: {
+      type: String,
+      required: true,
+    },
+    month: {
+      type: String,
+      required: true,
+    },
+    hasBookedCurrentMonth: {
+      booked: {
+        type: Boolean,
+        required: true,
+      },
+      slot: {
+        type: String,
+      },
+    },
   },
 });
 
+// we can refactor this
 let User: Model<any, {}>;
 
 if (mongoose.models.User) {

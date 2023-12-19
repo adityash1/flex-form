@@ -1,56 +1,49 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import { User } from "@/models/user";
-import { CompletePayment } from "@/lib/utils";
+import { createUserAdmission, updateBatchDetails } from "@/lib/user";
+import { MongoError } from "mongodb";
 
 export async function POST(req: Request) {
+  await connectDB();
+
   try {
-    await connectDB();
     const data = await req.json();
+    const usernameLowercase = data.username.toLowerCase();
+    const existingUser = await User.findOne({ username: usernameLowercase });
 
-    const user = new User({ ...data, paymentStatus: "pending" });
-    try {
-      await user.save();
-    } catch (error) {
-      console.error("Error in saving user data: ", error);
-      return NextResponse.json(
-        { error: "Internal Server Error" },
-        { status: 500 }
-      );
-    }
-
-    const paymentResult = await CompletePayment(user);
-
-    // If payment fails, update the status or remove the data.
-    if (!paymentResult.success) {
-      // Option 1: Remove the data.
-      // await user.remove();
-
-      // Option 2: Update the status.
-      // user.status = 'failed';
-      // await user.save();
-
-      return NextResponse.json(
-        { message: "Payment failed" },
-        {
-          status: 500,
-        }
-      );
+    if (existingUser) {
+      return await updateBatchDetails(existingUser, data);
     } else {
-      user.paymentStatus = "succesful";
-      user.save();
+      return await createUserAdmission(data);
     }
-
-    return NextResponse.json(user, {
-      status: 200,
-    });
   } catch (error) {
+    return handleError(
+      error instanceof Error ? error : new Error(String(error))
+    );
+  }
+}
+
+// we can implement proper error handling abstraction
+async function handleError(error: Error) {
+  if (error instanceof MongoError && error.code === 11000) {
+    const keyValue = (error as any).keyValue;
+    console.error("Duplicate key error:", error.message);
+    return NextResponse.json(
+      { error: "Duplicate Key Error", details: keyValue },
+      { status: 409 }
+    );
+  } else if (error.name === "ValidationError") {
+    console.error("Validation Error:", error.message);
+    return NextResponse.json(
+      { error: "Validation Error", details: error.message },
+      { status: 400 }
+    );
+  } else {
     console.error("Error in submitting data: ", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }

@@ -29,42 +29,16 @@ import {
   SelectContent,
   Select,
 } from "@/components/ui/select";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  age: z
-    .number()
-    .min(18, {
-      message: "age should be 18+",
-    })
-    .max(65, {
-      message: "age must be less than 65",
-    }),
-  batch: z
-    .string()
-    .nonempty({
-      message: "Batch selection is required",
-    })
-    .refine(
-      (value) => {
-        const validBatches = ["6-7AM", "7-8AM", "8-9AM", "5-6PM"];
-        return validBatches.includes(value);
-      },
-      {
-        message: "Invalid batch selection",
-      }
-    ),
-});
+import { formSchema } from "@/schema/admissionFormSchema";
 
 export function AdmissionForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      age: undefined,
-      batch: "",
+      age: null,
+      month: "",
+      slot: "",
     },
   });
 
@@ -117,8 +91,11 @@ export function AdmissionForm() {
                           type="number"
                           placeholder="Enter your age.."
                           {...field}
+                          value={field.value ?? ""}
                           onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber)
+                            e.target.value === ""
+                              ? field.onChange(null)
+                              : field.onChange(e.target.valueAsNumber)
                           }
                           max={65}
                           min={18}
@@ -131,34 +108,76 @@ export function AdmissionForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="batch"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Preferred Batch</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger id="batch-selection">
-                        <SelectValue placeholder="Select a batch" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent position="popper">
-                      <SelectItem value="6-7AM">6-7AM</SelectItem>
-                      <SelectItem value="7-8AM">7-8AM</SelectItem>
-                      <SelectItem value="8-9AM">8-9AM</SelectItem>
-                      <SelectItem value="5-6PM">5-6PM</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex space-x-4">
+              <FormField
+                control={form.control}
+                name="month"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Month</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger id="month-selection">
+                          <SelectValue placeholder="Select a month" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent position="popper">
+                        <SelectItem
+                          value={new Date().toLocaleString("default", {
+                            month: "long",
+                          })}
+                        >
+                          {new Date().toLocaleString("default", {
+                            month: "long",
+                          })}
+                        </SelectItem>
+                        <SelectItem
+                          value={new Date(
+                            new Date().setMonth(new Date().getMonth() + 1)
+                          ).toLocaleString("default", { month: "long" })}
+                        >
+                          {new Date(
+                            new Date().setMonth(new Date().getMonth() + 1)
+                          ).toLocaleString("default", { month: "long" })}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="slot"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Preferred Batch</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger id="batch-selection">
+                          <SelectValue placeholder="Select a batch" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent position="popper">
+                        <SelectItem value="6-7AM">6-7AM</SelectItem>
+                        <SelectItem value="7-8AM">7-8AM</SelectItem>
+                        <SelectItem value="8-9AM">8-9AM</SelectItem>
+                        <SelectItem value="5-6PM">5-6PM</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <Button type="submit" className="w-full">
-              Submit
+              Pay
             </Button>
           </form>
         </Form>
